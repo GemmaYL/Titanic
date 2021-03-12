@@ -1,0 +1,43 @@
+1. N/A removed
+2. N/A replaced by mean
+3. N/A replaced by mean adjusted
+4. N/A as feature in predicting survival
+
+
+import pandas as pd
+import numpy as np
+import scipy as pl
+from sklearn.neighbors import KNeighborsClassifier
+from matplotlib import pylab
+
+%matplotlib inline
+
+# Identify Anomalies 
+train = pd.read_csv('~/Downloads/train.csv')  
+#update it to url address .. next step
+
+train.dtypes 
+#anomalies identification could be applied to float or integer
+
+PassengerId= train['PassengerId']
+data=train.loc[:,'Age':'Fare']
+param='Fare'
+qv1= data[param].quantile(0.25)
+qv2= data[param].quantile(0.5)
+qv3= data[param].quantile(0.75)
+qv_limit= 1.5*(qv3-qv1)
+
+un_outlier_mask=(data[param]>qv3+qv_limit) |(data[param]<qv1-qv_limit)
+un_outlier_data=data[param][un_outlier_mask]
+un_outlier_name=PassengerId[un_outlier_mask]
+
+#def anomaly function ..next step
+
+fig= pylab.figure(figsize=(8,30))
+ax= fig.add_subplot(1,1,1)
+for name, y in zip(un_outlier_name, un_outlier_data):
+    ax.text(1,y,name)
+ax.boxplot(data[param])
+
+#change N/A, empty cells with mean (anomalies removed)
+
